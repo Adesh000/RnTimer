@@ -8,7 +8,6 @@ import {
   SectionList,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { HistoryEntry } from './HistoryScreen';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   CompletionModal,
@@ -16,10 +15,14 @@ import {
   ProgressBar,
   TimerCard,
 } from '../components';
-import { formatTime, GroupedTimers, Timer, TimerWithStatus } from '../utils';
-
-const STORAGE_KEY = '@timers';
-const HISTORY_STORAGE_KEY = '@timer_history';
+import {
+  formatTime,
+  GroupedTimers,
+  HistoryEntry,
+  KEYS,
+  Timer,
+  TimerWithStatus,
+} from '../utils';
 
 const HomeScreen = ({ navigation }) => {
   const [groupedTimers, setGroupedTimers] = useState<GroupedTimers>({});
@@ -33,7 +36,7 @@ const HomeScreen = ({ navigation }) => {
 
   const loadTimers = async () => {
     try {
-      const timersJSON = await AsyncStorage.getItem(STORAGE_KEY);
+      const timersJSON = await AsyncStorage.getItem(KEYS.STORAGE_KEY);
       if (timersJSON) {
         const timers: Timer[] = JSON.parse(timersJSON);
         const timersWithStatus: TimerWithStatus[] = timers.map(timer => ({
@@ -67,7 +70,7 @@ const HomeScreen = ({ navigation }) => {
   const persistTimers = async (groupedTimers: GroupedTimers) => {
     try {
       const allTimers = Object.values(groupedTimers).flat();
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(allTimers));
+      await AsyncStorage.setItem(KEYS.STORAGE_KEY, JSON.stringify(allTimers));
     } catch (error) {
       console.error('Error persisting timers to AsyncStorage:', error);
     }
@@ -105,7 +108,7 @@ const HomeScreen = ({ navigation }) => {
 
   const saveToHistory = async (timer: TimerWithStatus) => {
     try {
-      const historyJSON = await AsyncStorage.getItem(HISTORY_STORAGE_KEY);
+      const historyJSON = await AsyncStorage.getItem(KEYS.HISTORY_STORAGE_KEY);
       const history: HistoryEntry[] = historyJSON
         ? JSON.parse(historyJSON)
         : [];
@@ -120,7 +123,7 @@ const HomeScreen = ({ navigation }) => {
 
       const updatedHistory = [historyEntry, ...history];
       await AsyncStorage.setItem(
-        HISTORY_STORAGE_KEY,
+        KEYS.HISTORY_STORAGE_KEY,
         JSON.stringify(updatedHistory),
       );
     } catch (error) {
@@ -233,8 +236,6 @@ const HomeScreen = ({ navigation }) => {
       resetTimer(timer);
     });
   };
-
-  console.log('Grouped Timers:', groupedTimers);
 
   const sections = Object.entries(groupedTimers).map(([category, data]) => ({
     title: category,

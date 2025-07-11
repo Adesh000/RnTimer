@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { formatDate, formatDuration, HistoryEntry } from '../utils';
+import { formatDate, formatDuration, HistoryEntry, KEYS } from '../utils';
 import { CustomButton } from '../components';
-
-const HISTORY_STORAGE_KEY = '@timer_history';
 
 const HistoryScreen = () => {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   const loadHistory = async () => {
     try {
-      const historyJSON = await AsyncStorage.getItem(HISTORY_STORAGE_KEY);
+      const historyJSON = await AsyncStorage.getItem(KEYS.HISTORY_STORAGE_KEY);
       if (historyJSON) {
         const historyData = JSON.parse(historyJSON);
         setHistory(
@@ -54,7 +45,7 @@ const HistoryScreen = () => {
           onPress: async () => {
             try {
               await AsyncStorage.setItem(
-                HISTORY_STORAGE_KEY,
+                KEYS.HISTORY_STORAGE_KEY,
                 JSON.stringify([]),
               );
               setHistory([]);

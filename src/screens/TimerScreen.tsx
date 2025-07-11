@@ -3,20 +3,24 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   Alert,
   ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Timer } from '../utils';
+import { KEYS, Timer } from '../utils';
+import { FormInput } from '../components';
 
-const STORAGE_KEY = '@timers';
-
-const TimerScreen = () => {
+const TimerScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [duration, setDuration] = useState('');
   const [category, setCategory] = useState('');
+
+  const resetForm = () => {
+    setName('');
+    setDuration('');
+    setCategory('');
+  };
 
   const saveTimer = async () => {
     try {
@@ -32,17 +36,20 @@ const TimerScreen = () => {
         category,
         createdAt: Date.now(),
       };
-      console.log('Timer', newTimer);
 
-      const existingTimersJSON = await AsyncStorage.getItem(STORAGE_KEY);
+      const existingTimersJSON = await AsyncStorage.getItem(KEYS.STORAGE_KEY);
       const existingTimers: Timer[] = existingTimersJSON
         ? JSON.parse(existingTimersJSON)
         : [];
 
       const updatedTimers = [...existingTimers, newTimer];
-      console.log('Updated', updatedTimers);
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTimers));
+      await AsyncStorage.setItem(
+        KEYS.STORAGE_KEY,
+        JSON.stringify(updatedTimers),
+      );
+      resetForm();
       Alert.alert('Success', 'Timer saved successfully!');
+      navigation.goBack();
     } catch (error) {
       console.error('Error saving timer:', error);
       Alert.alert('Error', 'Failed to save timer');
@@ -52,28 +59,22 @@ const TimerScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.form}>
-        <Text style={styles.label}>Timer Name</Text>
-        <TextInput
-          style={styles.input}
+        <FormInput
+          title="Timer Name"
           value={name}
-          onChangeText={setName}
+          setValue={setName}
           placeholder="Enter timer name"
         />
-
-        <Text style={styles.label}>Duration (seconds)</Text>
-        <TextInput
-          style={styles.input}
+        <FormInput
+          title="Timer Name"
           value={duration}
-          onChangeText={setDuration}
+          setValue={setDuration}
           placeholder="Enter duration in seconds"
-          keyboardType="numeric"
         />
-
-        <Text style={styles.label}>Category</Text>
-        <TextInput
-          style={styles.input}
+        <FormInput
+          title="Category"
           value={category}
-          onChangeText={setCategory}
+          setValue={setCategory}
           placeholder="Enter category"
         />
 
@@ -92,20 +93,6 @@ const styles = StyleSheet.create({
   },
   form: {
     padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    marginTop: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-    fontSize: 16,
   },
   button: {
     backgroundColor: '#007AFF',

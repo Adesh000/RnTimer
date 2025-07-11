@@ -3,3 +3,4 @@ export { TimerCard };
 export * from './modal';
 export * from './progressBar';
 export * from './button';
+export * from './formInput';

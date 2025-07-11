@@ -1,6 +1,13 @@
+import { FC } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { CustomButtonProps } from '../../utils';
 
-export const CustomButton = ({ title, onPress, bgColor, disabled = false }) => {
+export const CustomButton: FC<CustomButtonProps> = ({
+  title,
+  onPress,
+  bgColor,
+  disabled = false,
+}) => {
   return (
     <TouchableOpacity
       style={[styles.categoryControlButton, { backgroundColor: bgColor }]}

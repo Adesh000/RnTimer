@@ -1,6 +1,11 @@
+import { FC } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { CompletionModalProps } from '../../utils';
 
-export const CompletionModal = ({ completedTimer, setCompletedTimer }) => (
+export const CompletionModal: FC<CompletionModalProps> = ({
+  completedTimer,
+  setCompletedTimer,
+}) => (
   <Modal
     animationType="fade"
     transparent={true}
