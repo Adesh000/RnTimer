@@ -1,0 +1,31 @@
+export interface Timer {
+  id: string;
+  name: string;
+  duration: number;
+  category: string;
+  createdAt: number;
+}
+
+export interface TimerWithStatus extends Timer {
+  status: 'Running' | 'Paused' | 'Completed';
+  remainingTime: number;
+}
+
+export interface GroupedTimers {
+  [key: string]: TimerWithStatus[];
+}
+
+export interface TimerCardProps {
+  timer: TimerWithStatus;
+  onStart: () => void;
+  onPause: () => void;
+  onReset: () => void;
+}
+
+export interface HistoryEntry {
+  id: string;
+  timerName: string;
+  category: string;
+  duration: number;
+  completedAt: number;
+}
